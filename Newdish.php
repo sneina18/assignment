@@ -1,3 +1,8 @@
+<?php
+     include "connection.php";
+     session_start(); 
+
+     ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,47 +54,42 @@ a:link {
     </style>
 </head>
 <body>
+
     <?php
-     include "connection.php";
-     session_start(); 
-     $phone = $_SESSION['phone'];
+        if (!isset($_SESSION['id']))
+          header("Location:login.php");
 
-     //random function
-     $id=mt_rand(1,1000);
-   // echo $phone."<br>";
-   // echo $id."<br>";
-
-     if(isset($_POST['dish'])){
-        $name= $_POST['name'];
-        $type= $_POST['type'];
-        $time= $_POST['time'];
-        $list= $_POST['list'];
-        $how= $_POST['how'];
-        $sql="INSERT INTO dish (id,nam,typ,time,list,how,phone) values ('$id','$name','$type','$time','$list','$how','$phone')";
-        $result = mysqli_query($conn,$sql);
-
-            if(!$result){
-                //echo"file not saved";
-                echo mysqli_error($conn);
-            }
-            else{
-                echo"changes made successfully";
-                header("location:home.php");
-
-            }
-     }
-
+        
+        $user_id = $_SESSION['id'];
     ?>
-    <form method="POST">
-        <input type="text" placeholder="Name of dish" name="name"><br>
-        <input type="text" placeholder="Type of dish" name="type"><br>
-        <input type="text" placeholder="Time for dish" name="time"><br>
-        <input type="text" placeholder="Ingredients for dish" name="list"><br>
-        <input type="text" placeholder="How to save dish" name="how"><br>
+
+
+    <form method="POST" action="">
+        <input type="text" placeholder="Name of dish" name="name" required><br>
+        <input type="text" placeholder="Type of dish" name="type" required><br>
+        <input type="text" placeholder="Time for dish" name="time" required><br>
+        <input type="text" placeholder="Ingredients for dish" name="list" required><br>
+        <input type="text" placeholder="How to save dish" name="how" required><br>
         
         
-        <input type="submit"  name="dish"><br>
+        <input type="submit"  name="dish" value="Submit"><br>
     </form>
+    <?php
     
+    if(isset($_POST['dish'])){
+      $name= $_POST['name'];
+      $type= $_POST['type'];
+      $time= $_POST['time'];
+      $list= $_POST['list'];
+      $how= $_POST['how'];
+      $sql="INSERT INTO dish (name,type,prep_time,ingredients,storage,user_id) values ('$name','$type','$time','$list','$how','$user_id')";
+      $result = mysqli_query($conn,$sql);
+
+        if (mysqli_affected_rows($conn))
+          header("Location:home.php");
+   }
+
+  
+    ?>
 </body>
 </html>

@@ -1,3 +1,7 @@
+<?php 
+session_start(); 
+include "connection.php";
+?> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,21 +79,15 @@ color:white;}
   </style>
 </head>
 <body>
-    <?php  include "connection.php";
-                session_start(); 
-        ?> 
-       <a href="logout.php">log-out</a>
-    <h1>Welcome <?php   echo $_SESSION['FName'].' '.$_SESSION['OName']. ' '.$_SESSION['SName'];  ?></h1>
+   
+  <?php 
+    if (!isset($_SESSION['id']))
+        header('Location:login.php');
+      ?>
+     <a href="logout.php">log-out</a>
+    <h1>Welcome <?php   echo $_SESSION['name']; ?></h1>
 
-    <html>
-<head>
-    <title>foood</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <style type="text/css">
-
-    </style>
-</head>
-<body>
+    
 
 <header>
     <nav class="navmain">
@@ -114,32 +112,107 @@ color:white;}
     </div>
         </ul> </br>
 
-      
-        
-     
-
-
-
-
-
-
 <table width="80%" border="1" style="border-collapse:collapse;">
 <thead>
 <tr>
-<th><strong>NAME</strong></th>
-<th><strong>TYPE</strong></th>
-<th><strong>PREP TIME</strong></th>
-<th><strong>INGREDIENTS</strong></th>
-<th><strong>WAY OF STORAGE</strong></th>
+  <th><strong>NAME</strong></th>
+  <th><strong>TYPE</strong></th>
+  <th><strong>PREP TIME</strong></th>
+  <th><strong>INGREDIENTS</strong></th>
+  <th><strong>WAY OF STORAGE</strong></th>
+
 <th colspan="2"><strong>ACTION</strong></th>
+</thead>
 </tr>
- <tr>
+
+<?php
+  $query = "SELECT * FROM dish WHERE type='Dessert' AND user_id = " . $_SESSION['id'];
+  $result = mysqli_query($conn, $query);
+
+  if (mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+      ?><tr><td> <?php echo $row['name']; ?></td>
+        <td> <?php echo $row['type']; ?></td>
+        <td> <?php echo $row['prep_time']; ?></td>
+        <td> <?php echo $row['ingredients']; ?></td>
+        <td><?php echo $row['storage']; ?></td>
+        <td><a href="edit.php?id=<?php echo $row['id']; ?>">Edit</a></td>
+        <td><a href="del.php?id=<?php echo $row['id']; ?>">Delete</a></td>
+    </tr><?php 
+    }
+  }
+  
+?>
+<!-- <tr>
+    <td>Summer smoothie</td>
+    <td>Breakfast</td>
+    <td>5 mins</td>
+    <td> orange juice, coconut yoghurt, frozen mango, carrot.</td>
+    <td>Chill</td>
+     <td><a href="edit.php">Edit</td>
+      <td><a href="del.php">Delete</td>
+  </tr>
+  <tr>
+    <td>Granola</td>
+    <td>Breakfast</td>
+    <td> 1 hour 15 mins.</td>
+    <td>coconut oil, maple syrup, kosher salt, rolled oats, coconut flakes, pumpkin seeds, sunflower seeds.</td>
+    <td>Refrigerate.</td>
+     <td><a href="edit.php">Edit</td>
+      <td><a href="del.php">Delete</td>
+  </tr>
+  <tr>
+    <td>Omelete-in-a-bun</td>
+    <td>Breakfast</td>
+    <td>10 mins</td>
+    <td> pepper and onion mixture, eggs, salt, provolone cheese</td>
+    <td>Keep Warm.</td>
+     <td><a href="edit.php">Edit</td>
+      <td><a href="del.php">Delete</td>
+  </tr>
+  <tr>
+    <td>Burrito Bowls</td>
+    <td>Lunch</td>
+    <td>2 hours</td>
+    <td>Rice, salsa, lettuce, corn, sour cream, black beans.</td>
+    <td>Refrigerate.</td>
+     <td><a href="edit.php">Edit</td>
+      <td><a href="del.php">Delete</td>
+  </tr>
+  <tr>
+    <td>BBQ Chicken Salad</td>
+    <td>Lunch</td>
+    <td> 1 hour 30 mins</td>
+    <td>tomato, chicken breasts, corn kennels, cheddar cheese, BBQ sauce, tortila strips, red onion.</td>
+    <td>Refrigerate.</td>
+     <td><a href="edit.php">Edit</td>
+      <td><a href="del.php">Delete</td>
+  </tr>
+  <tr>
+    <td>Skirt Steak</td>
+    <td>Dinner</td>
+    <td>1 hours 27 mins</td>
+    <td>olive oil, cumin, garlic, lime juice, red pepper, skirt steaks, brown sugar</td>
+    <td>Freeze.</td>
+     <td><a href="edit.php">Edit</td>
+      <td><a href="del.php">Delete</td>
+  </tr>
+  <tr>
+    <td>Grilled steak with greek corn salad.</td>
+    <td>Dinner</td>
+    <td>20 mins</td>
+    <td>Olive oil, oregano, pepper, red wine, onion, tomatoes, feta cheese, cube steaks, corn. </td>
+    <td>Refrigerate.</td>
+     <td><a href="edit.php">Edit</td>
+      <td><a href="del.php">Delete</td>
+  </tr>
+  <tr>
     <td>Ice cream truffles</td>
     <td>Dessert</td>
     <td>1 hour 30 mins.</td>
     <td>vanilla ice cream, malt balls, heath bars, payday bars, white chocolate.</td>
     <td>Refrigerate.</td>
-    <td><a href="edit.php">Edit</td>
+     <td><a href="edit.php">Edit</td>
       <td><a href="del.php">Delete</td>
   </tr>
   <tr>
@@ -148,7 +221,7 @@ color:white;}
     <td>1 hour</td>
     <td>Chocolate chips, egg, sugar, milk butter, vanilla extract, sea salt.</td>
     <td>Refrigerate.</td>
-    <td><a href="edit.php">Edit</td>
+     <td><a href="edit.php">Edit</td>
       <td><a href="del.php">Delete</td>
   </tr>
   <tr>
@@ -158,6 +231,10 @@ color:white;}
     <td> old fashion oats, all purpose flour,
 brown sugar,baking powder,raspberries, brown sugar, all-purpose flour,vanilla extract, lemon zest.</td>
     <td>Refrigerate</td>
-    <td><a href="edit.php">Edit</td>
+     <td><a href="edit.php">Edit</td>
       <td><a href="del.php">Delete</td>
-  </tr>
+  </tr> -->
+
+
+</body>
+</html>

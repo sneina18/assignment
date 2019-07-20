@@ -1,3 +1,7 @@
+<?php 
+session_start(); 
+include "connection.php";
+?> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,21 +79,15 @@ color:white;}
   </style>
 </head>
 <body>
-    <?php  include "connection.php";
-                session_start(); 
-        ?> 
-       <a href="logout.php">log-out</a>
-    <h1>Welcome <?php   echo $_SESSION['FName'].' '.$_SESSION['OName']. ' '.$_SESSION['SName'];  ?></h1>
+   
+  <?php 
+    if (!isset($_SESSION['id']))
+        header('Location:login.php');
+      ?>
+     <a href="logout.php">log-out</a>
+    <h1>Welcome <?php   echo $_SESSION['name']; ?></h1>
 
-    <html>
-<head>
-    <title>foood</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <style type="text/css">
-
-    </style>
-</head>
-<body>
+    
 
 <header>
     <nav class="navmain">
@@ -113,19 +111,39 @@ color:white;}
       
     </div>
         </ul> </br>
-  
+
 <table width="80%" border="1" style="border-collapse:collapse;">
 <thead>
 <tr>
-<th><strong>NAME</strong></th>
-<th><strong>TYPE</strong></th>
-<th><strong>PREP TIME</strong></th>
-<th><strong>INGREDIENTS</strong></th>
-<th><strong>WAY OF STORAGE</strong></th>
+  <th><strong>NAME</strong></th>
+  <th><strong>TYPE</strong></th>
+  <th><strong>PREP TIME</strong></th>
+  <th><strong>INGREDIENTS</strong></th>
+  <th><strong>WAY OF STORAGE</strong></th>
 
 <th colspan="2"><strong>ACTION</strong></th>
+</thead>
 </tr>
-<tr>
+
+<?php
+  $query = "SELECT * FROM dish WHERE user_id = " . $_SESSION['id'];
+  $result = mysqli_query($conn, $query);
+
+  if (mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+      ?><tr><td> <?php echo $row['name']; ?></td>
+        <td> <?php echo $row['type']; ?></td>
+        <td> <?php echo $row['prep_time']; ?></td>
+        <td> <?php echo $row['ingredients']; ?></td>
+        <td><?php echo $row['storage']; ?></td>
+        <td><a href="edit.php?id=<?php echo $row['id']; ?>">Edit</a></td>
+        <td><a href="del.php?id=<?php echo $row['id']; ?>">Delete</a></td>
+    </tr><?php 
+    }
+  }
+  
+?>
+<!-- <tr>
     <td>Summer smoothie</td>
     <td>Breakfast</td>
     <td>5 mins</td>
@@ -215,14 +233,8 @@ brown sugar,baking powder,raspberries, brown sugar, all-purpose flour,vanilla ex
     <td>Refrigerate</td>
      <td><a href="edit.php">Edit</td>
       <td><a href="del.php">Delete</td>
-  </tr>
-</thead>
-<tbody>
+  </tr> -->
 
-
-
-
-?>
 
 </body>
 </html>
