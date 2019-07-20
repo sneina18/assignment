@@ -1,8 +1,12 @@
 <?php
+// $servername = "localhost";
+// $username = "root";
+// $password = "";
+// $datebaseName = "work";
 $servername = "localhost";
 $username = "root";
-$password = "";
-$datebaseName = "work";
+$password = "engineer";
+$datebaseName = "assignment";
 
 // Create connection
 $conn = mysqli_connect($servername, $username, $password,$datebaseName);
